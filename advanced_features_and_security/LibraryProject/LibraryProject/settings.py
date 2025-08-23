@@ -26,6 +26,10 @@ SECRET_KEY = 'django-insecure-u!i5)5!+%m5edy+0tqe!vc99phl1^t437u6k@g%d2howk2z@4x
 DEBUG = True
 
 ALLOWED_HOSTS = []
+AUTH_USER_MODEL = 'bookshelf.Customer'
+
+
+
 
 
 
@@ -43,6 +47,7 @@ INSTALLED_APPS = [
     'accounts',
 
 ]
+AUTH_USER_MODEL = 'accouts.Customer'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -129,10 +134,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'home'
 
-AUTH_USER_MODEL = 'accounts.CustomUser'  
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-AUTH_USER_MODEL = 'bookshelf.CustomUser'  
+
+
 
 

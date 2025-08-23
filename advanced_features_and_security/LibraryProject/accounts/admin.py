@@ -1,15 +1,17 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import CustomUser
+from .models import Customer
 
-class CustomUserAdmin(UserAdmin):
-    model = CustomUser
+
+class CustomerAdmin(UserAdmin):
+    model = Customer
+    list_display = ("username", "email", "phone_number", "is_staff", "is_active")
     fieldsets = UserAdmin.fieldsets + (
-        (None, {'fields': ('date_of_birth', 'profile_photo')}),
+        (None, {"fields": ("phone_number",)}),
     )
     add_fieldsets = UserAdmin.add_fieldsets + (
-        (None, {'fields': ('date_of_birth', 'profile_photo')}),
+        (None, {"fields": ("phone_number",)}),
     )
-    list_display = ['username', 'email', 'date_of_birth', 'is_staff']
 
-admin.site.register(CustomUser, CustomUserAdmin)
+
+admin.site.register(Customer, CustomerAdmin)
