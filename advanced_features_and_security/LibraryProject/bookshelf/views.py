@@ -1,36 +1,41 @@
-from bookshelf.models import Customer
-from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib.auth.decorators import permission_required
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from django.core.paginator import Paginator
+from django.views.decorators.http import require_http_methods
+from django.contrib.auth.decorators import login_required, permission_required
+
 from .models import Book
+from .forms import BookForm, SearchForm
 
-@permission_required('bookshelf.can_view', raise_exception=True)
+@require_http_methods(["GET"])
 def book_list(request):
-    books = Book.objects.all()
-    return render(request, 'bookshelf/book_list.html', {'books': books})
+    form = SearchForm(request.GET or None)
+    qs = Book.objects.all().order_by("-id")
 
-@permission_required('bookshelf.can_create', raise_exception=True)
-def book_create(request):
-    if request.method == 'POST':
-        title = request.POST.get('title')
-        author = request.POST.get('author')
-        published_date = request.POST.get('published_date')
-        Book.objects.create(title=title, author=author, published_date=published_date)
-        return redirect('book_list')
-    return render(request, 'bookshelf/book_form.html')
+    if form.is_valid():
+        q = form.cleaned_data.get("q") or ""
+        if q:
+            # Safe: ORM builds a parameterized query (no SQL injection).
+            qs = qs.filter(title__icontains=q) | qs.filter(author__icontains=q)
 
-@permission_required('bookshelf.can_edit', raise_exception=True)
-def book_edit(request, pk):
-    book = get_object_or_404(Book, pk=pk)
-    if request.method == 'POST':
-        book.title = request.POST.get('title')
-        book.author = request.POST.get('author')
-        book.published_date = request.POST.get('published_date')
-        book.save()
-        return redirect('book_list')
-    return render(request, 'bookshelf/book_form.html', {'book': book})
+    paginator = Paginator(qs, 10)
+    page_obj = paginator.get_page(request.GET.get("page"))
+    return render(request, "bookshelf/book_list.html", {"page_obj": page_obj, "form": form})
 
-@permission_required('bookshelf.can_delete', raise_exception=True)
-def book_delete(request, pk):
-    book = get_object_or_404(Book, pk=pk)
-    book.delete()
-    return redirect('book_list')
+@login_required
+@permission_required("bookshelf.add_book", raise_exception=True)
+@require_http_methods(["GET", "POST"])
+def create_book(request):
+    if request.method == "POST":
+        form = BookForm(request.POST)
+        if form.is_valid():
+            Book.objects.create(
+                title=form.cleaned_data["title"],
+                author=form.cleaned_data["author"],
+                published_date=form.cleaned_data.get("published_date"),
+            )
+            messages.success(request, "Book created.")
+            return redirect("bookshelf:book_list")
+    else:
+        form = BookForm()
+    return render(request, "bookshelf/form_example.html", {"form": form})

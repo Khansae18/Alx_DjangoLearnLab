@@ -45,9 +45,10 @@ INSTALLED_APPS = [
     'bookshelf',
     'relationship_app',
     'accounts',
+    "csp",
 
 ]
-AUTH_USER_MODEL = 'accouts.Customer'
+AUTH_USER_MODEL = 'accounts.Customer'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -136,6 +137,63 @@ LOGIN_REDIRECT_URL = 'home'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+# ---------- Core ----------
+DEBUG = False  # in production
+ALLOWED_HOSTS = ["your-domain.com", "www.your-domain.com"]  # set your hosts
+
+# ---------- SecurityMiddleware ----------
+MIDDLEWARE = [
+    "django.middleware.security.SecurityMiddleware",
+    # CSP middleware (after SecurityMiddleware; see CSP section below)
+    "csp.middleware.CSPMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
+]
+
+# ---------- Cookies ----------
+SESSION_COOKIE_SECURE = True         
+CSRF_COOKIE_SECURE = True           
+SESSION_COOKIE_HTTPONLY = True       
+# If you don't need to read the CSRF cookie from JS (AJAX), set True; otherwise leave False.
+CSRF_COOKIE_HTTPONLY = True
+
+# ---------- Headers ----------
+SECURE_CONTENT_TYPE_NOSNIFF = True 
+X_FRAME_OPTIONS = "DENY"          
+
+# NOTE: SECURE_BROWSER_XSS_FILTER is obsolete in modern browsers/Django (removed).
+# Prefer CSP and correct escaping instead.
+
+# ---------- HTTPS / HSTS ----------
+SECURE_SSL_REDIRECT = True           # redirect HTTP -> HTTPS (enable once HTTPS is ready)
+SECURE_HSTS_SECONDS = 31536000       # 1 year
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True           # consider submitting to HSTS preload list after verifying
+
+# ---------- Referrer policy ----------
+SECURE_REFERRER_POLICY = "strict-origin-when-cross-origin"
+
+# ---------- CSRF trusted origins (add your domain) ----------
+CSRF_TRUSTED_ORIGINS = [
+    "https://your-domain.com",
+    "https://www.your-domain.com",
+]
+# Strict baseline; adjust for your needs (fonts, images, CDNs, etc.)
+CSP_DEFAULT_SRC = ("'self'",)
+CSP_SCRIPT_SRC = ("'self'",)            # if you must allow inline: add "'unsafe-inline'" (not recommended)
+CSP_STYLE_SRC = ("'self'",)             # if you use inline styles or Tailwind via CDN, add what you need
+CSP_IMG_SRC = ("'self'", "data:",)      # allow images and data URIs for small inline images
+CSP_FONT_SRC = ("'self'", "data:",)
+CSP_FRAME_ANCESTORS = ("'none'",)
+CSP_OBJECT_SRC = ("'none'",)
+# Example if you serve static from a CDN:
+# CSP_IMG_SRC = ("'self'", "data:", "https://cdn.example.com")
+# CSP_SCRIPT_SRC = ("'self'", "https://cdn.example.com")
+
 
 
 

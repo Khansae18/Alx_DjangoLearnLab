@@ -1,5 +1,12 @@
+from django.contrib.auth.models import AbstractUser
 from django.db import models
 
+class Customer(AbstractUser):
+    # You can add extra fields if needed, e.g. role, phone, etc.
+    role = models.CharField(max_length=50, blank=True, null=True)
+
+    def __str__(self):
+        return self.username
 
 class Book(models.Model):
     """
