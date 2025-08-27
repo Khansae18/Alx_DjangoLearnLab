@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'relationship_app',
     'accounts',
     "csp",
+    "django_extensions"
 
 ]
 AUTH_USER_MODEL = 'accounts.Customer'
@@ -193,6 +194,44 @@ CSP_OBJECT_SRC = ("'none'",)
 # Example if you serve static from a CDN:
 # CSP_IMG_SRC = ("'self'", "data:", "https://cdn.example.com")
 # CSP_SCRIPT_SRC = ("'self'", "https://cdn.example.com")
+# Force all traffic to use HTTPS
+SECURE_SSL_REDIRECT = True   # Redirect HTTP requests to HTTPS
+
+# HTTP Strict Transport Security (HSTS)
+SECURE_HSTS_SECONDS = 31536000  # One year in seconds
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True  # Apply HSTS to all subdomains
+SECURE_HSTS_PRELOAD = True  # Allow site to be preloaded in browsers
+# Make cookies secure (only sent over HTTPS)
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+# Browser security headers
+X_FRAME_OPTIONS = 'DENY'           # Prevent clickjacking
+SECURE_CONTENT_TYPE_NOSNIFF = True # Prevent MIME-type sniffing
+SECURE_BROWSER_XSS_FILTER = True   # Enable browser XSS protection
+# ========================
+# SECURITY CONFIGURATION
+# ========================
+
+# Force HTTPS redirect
+SECURE_SSL_REDIRECT = not DEBUG  
+
+# HSTS: Strict Transport Security (force HTTPS in browsers)
+SECURE_HSTS_SECONDS = 31536000  # 1 year
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
+
+# Secure cookies (only sent over HTTPS)
+SESSION_COOKIE_SECURE = not DEBUG
+CSRF_COOKIE_SECURE = not DEBUG
+
+# Security headers
+X_FRAME_OPTIONS = "DENY"  # Prevent clickjacking
+SECURE_CONTENT_TYPE_NOSNIFF = True  # Prevent MIME sniffing
+SECURE_BROWSER_XSS_FILTER = True  # XSS protection in browsers
+
+# Referrer policy (extra privacy)
+SECURE_REFERRER_POLICY = "strict-origin-when-cross-origin"
+
 
 
 

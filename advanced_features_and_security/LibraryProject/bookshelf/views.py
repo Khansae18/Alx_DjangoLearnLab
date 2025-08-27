@@ -1,5 +1,9 @@
 from django.shortcuts import render, redirect
 from .forms import ExampleForm
+from django.http import HttpResponse
+
+def book_list(request):
+    return HttpResponse("This is the book list page")
 
 def example_form_view(request):
     if request.method == 'POST':
