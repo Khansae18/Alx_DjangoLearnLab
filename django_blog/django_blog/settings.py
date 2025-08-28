@@ -143,3 +143,14 @@ TEMPLATES = [
         },
     },
 ]
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'django_blog',       # database name
+        'USER': 'postgres',          # your db username
+        'PASSWORD': 'postgres',      # your db password
+        'HOST': 'localhost',         # or '127.0.0.1'
+        'PORT': '5432',              # default PostgreSQL port
+    }
+}
