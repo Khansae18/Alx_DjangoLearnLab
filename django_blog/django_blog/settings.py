@@ -154,3 +154,5 @@ DATABASES = {
         'PORT': '5432',              # default PostgreSQL port
     }
 }
+LOGIN_REDIRECT_URL = "profile"
+LOGOUT_REDIRECT_URL = "login"
