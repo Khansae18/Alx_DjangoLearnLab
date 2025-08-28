@@ -13,11 +13,12 @@ class BookListView(generics.ListAPIView):
     serializer_class = BookSerializer
     permission_classes = [permissions.AllowAny]  
     filter_backends = [filters.SearchFilter]
-    search_fields = ['title', 'author__name']
+    search_fields = ['title', 'author']
     filterset_fields = ['title', 'author', 'publication_year']
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     ordering_fields = ['title', 'publication_year']
     ordering = ['title']  
-    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter] 
+    
 
 
 # Retrieve a single book
