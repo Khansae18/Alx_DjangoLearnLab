@@ -6,6 +6,8 @@ from .models import Post, comment
 from .forms import PostForm
 from .forms import CommentForm
 from django.shortcuts import get_object_or_404, redirect
+from django.views.generic import CreateView
+
 
 
 # List all posts
@@ -72,6 +74,18 @@ def add_comment(request, pk):
     else:
         form = CommentForm()
     return redirect('post-detail', pk=post.pk)
+class CommentCreateView(LoginRequiredMixin, CreateView):
+    model = Comment
+    form_class = CommentForm
+    template_name = 'blog/comment_form.html'
+
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        form.instance.post = get_object_or_404(Post, pk=self.kwargs['pk'])
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return self.object.post.get_absolute_url()
 
 class CommentUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Comment
