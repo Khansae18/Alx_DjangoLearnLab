@@ -117,6 +117,11 @@ def post_list(request):
             Q(content__icontains=query) |
             Q(tags__name__icontains=query)
         ).distinct()
+        posts = Post.objects.filter(
+            Q(title__icontains=query) |
+            Q(content__icontains=query) |
+            Q(tags__name__icontains=query)  # works with taggit
+        ).distinct()
     return render(request, 'blog/post_list.html', {'posts': posts})
 
 def posts_by_tag(request, tag_name):
