@@ -25,7 +25,7 @@ class PostForm(forms.ModelForm):
     tags = forms.CharField(required=False, help_text="Enter tags separated by commas")
     class Meta:
         model = Post
-        fields = ['title', 'content']
+        fields = ['title', 'content', 'tags']
     def save(self, commit=True):
         post = super().save(commit=False)
         if commit:
