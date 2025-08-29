@@ -59,7 +59,13 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware', 
 ]
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# Compress static files
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 ROOT_URLCONF = 'social_media_api.urls'
 
@@ -140,3 +146,28 @@ REST_FRAMEWORK = {
         "rest_framework.authentication.TokenAuthentication",
     ],
 }
+
+# social_media_api/settings.py
+
+import os
+from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = False
+
+# Add your domain or Heroku host
+ALLOWED_HOSTS = ['your-app-name.herokuapp.com', 'localhost']
+
+# Security settings
+SECURE_BROWSER_XSS_FILTER = True
+X_FRAME_OPTIONS = 'DENY'
+SECURE_CONTENT_TYPE_NOSNIFF = True
+SECURE_SSL_REDIRECT = True  # Redirect HTTP -> HTTPS (if using SSL)
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+# On your local machine (or Heroku config vars)
+DJANGO_SECRET_KEY='your-secret-key'
+DATABASE_URL='postgres://user:password@host:port/dbname'
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
