@@ -55,7 +55,7 @@ class FeedView(APIView):
         serializer = PostSerializer(posts, many=True)
         return Response(serializer.data)
     
-    class LikePostView(generics.GenericAPIView):
+class LikePostView(generics.GenericAPIView):
      permission_classes = [IsAuthenticated]
 
     def post(self, request, pk):
